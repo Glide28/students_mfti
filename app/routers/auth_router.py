@@ -16,7 +16,6 @@ router = APIRouter(
 
 security = HTTPBearer()
 
-
 def hash_password(password: str) -> str:
     """Хэширование пароля с помощью bcrypt."""
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -50,7 +49,7 @@ def register(
     db: Session = Depends(get_db),
 ):
     """
-    Регистрация нового пользователя.
+        Регистрация нового пользователя.
     """
     existing = db.query(User).filter(User.username == data.username).first()
     if existing:
@@ -65,15 +64,14 @@ def register(
     db.commit()
     return {"status": "registered"}
 
-
 @router.post("/login", response_model=UserOut)
 def login(
     data: LoginData,
     db: Session = Depends(get_db),
 ):
     """
-    Аутентификация пользователя.
-    Возвращает id, username и токен.
+        Аутентификация пользователя.
+        Возвращает id, username и токен.
     """
     user = db.query(User).filter(User.username == data.username).first()
 
@@ -86,14 +84,13 @@ def login(
     db.refresh(user)
     return user
 
-
 @router.post("/logout")
 def logout(
     current: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
-    Logout: очищает токен у текущего пользователя.
+        Logout: очищает токен у текущего пользователя.
     """
     current.token = None
     db.commit()
