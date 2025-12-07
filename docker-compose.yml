@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mfti_user
+      POSTGRES_PASSWORD: mfti_pass
+      POSTGRES_DB: mfti_students
+    volumes:
+      - D:/DockerData/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

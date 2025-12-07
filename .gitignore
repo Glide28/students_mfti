@@ -1,0 +1,35 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# IDE / Editors
+.vscode/
+.idea/
+
+# Pytest cache
+.pytest_cache/
+
+# Migrations (если появятся)
+alembic.ini
+alembic/
+
+# Local DB (если не хочешь коммитить)
+students.db
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
