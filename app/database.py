@@ -4,10 +4,10 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# SQLAlchemy Base for models
+# SQLAlchemy Base для моделей
 Base = declarative_base()
 
-# Read PostgreSQL settings from environment (used in Docker)
+# PostgreSQL настройки из environment (Docker)
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
@@ -23,20 +23,19 @@ if POSTGRES_USER and POSTGRES_PASSWORD and POSTGRES_DB:
 else:
     # SQLite mode (local dev/tests)
     DATABASE_URL = "sqlite:///./students.db"
-    # SQLite needs this flag in multithreaded environments like FastAPI + TestClient
+    # Для SQLite требуется флаг в многопоточной среде: FastAPI + TestClient
     connect_args = {"check_same_thread": False}
 
-# Create SQLAlchemy engine
+# SQLAlchemy engine
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
 
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 def get_db():
     """
-    Dependency for FastAPI endpoints.
-    Creates a DB session and closes it after the request.
+        Зависимость для FastAPI endpoints.
+        Создаёт сессию базы данных и закрывает её после выполнения запроса
     """
     db = SessionLocal()
     try:
