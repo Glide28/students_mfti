@@ -20,7 +20,7 @@ def create_student(
     current: User = Depends(get_current_user),
 ):
     """
-    Создание студента (только для авторизованных пользователей).
+        Создание студента (только для авторизованных пользователей).
     """
     obj = Student(
         name=student.name,
@@ -40,7 +40,7 @@ def read_students(
     current: User = Depends(get_current_user),
 ):
     """
-    Получение списка всех студентов.
+        Получение списка всех студентов.
     """
     objs = db.query(Student).all()
     return objs
@@ -53,7 +53,7 @@ def read_student(
     current: User = Depends(get_current_user),
 ):
     """
-    Получение одного студента по id.
+        Получение одного студента по id.
     """
     obj = db.query(Student).filter(Student.id == student_id).first()
     if not obj:
@@ -69,7 +69,7 @@ def update_student(
     current: User = Depends(get_current_user),
 ):
     """
-    Частичное обновление данных студента.
+        Частичное обновление данных студента.
     """
     obj = db.query(Student).filter(Student.id == student_id).first()
     if not obj:
@@ -90,7 +90,7 @@ def delete_student(
     current: User = Depends(get_current_user),
 ):
     """
-    Удаление студента.
+        Удаление студента.
     """
     obj = db.query(Student).filter(Student.id == student_id).first()
     if not obj:
