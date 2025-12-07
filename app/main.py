@@ -2,11 +2,11 @@
 from fastapi import FastAPI
 
 from app.database import Base, engine
-from app import models  # импорт нужен, чтобы модели зарегистрировались в метаданных
+from app import models  
 from app.routers.auth_router import router as auth_router
 from app.routers.students_router import router as students_router
 
-# Создаём таблицы в БД (для учебного проекта без Alembic)
+# Создаёт таблицы в БД 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -14,8 +14,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-
-# Подключаем роутеры
+# Подключает роутеры
 app.include_router(auth_router)
 app.include_router(students_router)
 
