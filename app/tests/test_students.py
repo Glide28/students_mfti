@@ -6,12 +6,18 @@ from app.database import engine
 
 client = TestClient(app)
 
-# Reset DB
+# Полный сброс и пересоздание схемы БД перед тестами
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
-def register_login(username="test", password="1234"):
+def register_login(username="тест", password="1234"):
+    """
+        Вспомогательная функция:
+        - регистрирует пользователя
+        - логинит его
+        - возвращает заголовок Authorization с токеном
+    """
     client.post("/auth/register", json={"username": username, "password": password})
     resp = client.post("/auth/login", json={"username": username, "password": password})
     token = resp.json()["token"]
@@ -20,21 +26,52 @@ def register_login(username="test", password="1234"):
 
 def test_create_student_authorized():
     headers = register_login()
-    data = {"name": "John Doe", "faculty": "CS", "course": "Python", "score": 5}
+    data = {
+        "name": "Иван Иванов",
+        "faculty": "ФКН",
+        "course": "Python",
+        "score": 5,
+    }
     resp = client.post("/students/", json=data, headers=headers)
     assert resp.status_code == 200
-    assert resp.json()["name"] == "John Doe"
+    body = resp.json()
+    assert body["name"] == "Иван Иванов"
+    assert body["faculty"] == "ФКН"
+    assert body["course"] == "Python"
+    assert body["score"] == 5
 
 
 def test_create_student_unauthorized():
-    data = {"name": "Jane Doe", "faculty": "CS", "course": "Python", "score": 5}
+    data = {
+        "name": "Мария Петрова",
+        "faculty": "ФКН",
+        "course": "Python",
+        "score": 5,
+    }
     resp = client.post("/students/", json=data)
+    # без токена доступ запрещён
     assert resp.status_code == 401
 
 
 def test_get_students_list():
-    headers = register_login("user2", "2222")
-    client.post("/students/", json={"name": "X", "faculty": "CS", "course": "ML", "score": 4}, headers=headers)
+    headers = register_login("пользователь2", "2222")
+
+    # создаём одного студента перед запросом списка
+    client.post(
+        "/students/",
+        json={
+            "name": "Алексей Смирнов",
+            "faculty": "ФКН",
+            "course": "ML",
+            "score": 4,
+        },
+        headers=headers,
+    )
+
     resp = client.get("/students/", headers=headers)
     assert resp.status_code == 200
-    assert isinstance(resp.json(), list)
+    data = resp.json()
+    assert isinstance(data, list)
+    assert len(data) >= 1
+    names = [s["name"] for s in data]
+    assert "Алексей Смирнов" in names
